@@ -3,7 +3,7 @@
 body { margin: 0; font-family: "Segoe UI", Roboto, Helvetica, sans-serif; font-size: 16px;
        color: #2b2622; background: #faf7f2; }
 a { color: #0f766e; }
-.wrap { width: 1000px; margin: 0 auto; }
+.wrap { width: min(1000px, 100% - 40px); margin: 0 auto; }
 .top { background: #ffffff; border-bottom: 3px solid #0f766e; }
 .top__row { display: flex; align-items: center; justify-content: space-between; height: 70px; }
 .brand { display: flex; align-items: center; gap: 10px; font-size: 21px; font-weight: 700; color: #2b2622; text-decoration: none; }
@@ -23,11 +23,11 @@ a { color: #0f766e; }
 .btn { display: inline-block; background: #c2410c; color: #fff; border: none; border-radius: 22px;
        padding: 10px 22px; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
 .btn--sm { padding: 6px 12px; }
-.box { background: #fff; width: 440px; padding: 26px; border-radius: 14px; border: 1px solid #ece5da; }
+.box { background: #fff; width: 100%; max-width: 460px; padding: 26px; border-radius: 14px; border: 1px solid #ece5da; }
 .box label { display: block; margin-bottom: 14px; font-weight: 600; }
 .box input, .box select, .box textarea { display: block; width: 100%; margin-top: 6px; padding: 9px 12px;
        border: 1px solid #cfc6b8; border-radius: 8px; font: inherit; font-weight: 400; }
-.errors { background: #fdecea; color: #b42318; padding: 12px 12px 12px 32px; border-radius: 10px; width: 440px; }
+.errors { background: #fdecea; color: #b42318; padding: 12px 12px 12px 32px; border-radius: 10px; max-width: 460px; }
 .note { padding: 12px 16px; border-radius: 10px; }
 .note--ok { background: #dcf3ea; color: #05603a; }
 .note--error { background: #fdecea; color: #b42318; }
@@ -81,3 +81,51 @@ a { color: #0f766e; }
 .stars-pick label { font-size: 34px; color: #d6cfc4; cursor: pointer; margin: 0 2px 0 0; }
 .stars-pick input:checked ~ label, .stars-pick label:hover, .stars-pick label:hover ~ label { color: #f59e0b; }
 .stars-pick .field__error { order: -1; width: 100%; }
+
+
+/* ===== ПР 13: адаптивная вёрстка (mobile: 390×844) ===== */
+img { max-width: 100%; height: auto; }
+.mnav { display: none; }
+.grid { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+.tbl { display: block; overflow-x: auto; }
+
+@media (max-width: 900px) {
+    .cards { grid-template-columns: 1fr; }
+    .hero { padding: 20px; }
+}
+
+@media (max-width: 700px) {
+    body { font-size: 16px; }
+    .top__row { height: 60px; position: relative; }
+    .brand { font-size: 18px; }
+    .brand__mark { width: 32px; height: 32px; }
+    .mnav { display: block; }
+    .mnav__btn { list-style: none; cursor: pointer; padding: 10px 16px; border-radius: 20px;
+                 background: #0f766e; color: #fff; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+    .mnav__btn::-webkit-details-marker { display: none; }
+    .mnav[open] .mnav__btn { background: #2b2622; }
+    .menu { display: none; position: absolute; z-index: 20; top: 60px; left: -20px; right: -20px;
+            background: #fff; border-bottom: 3px solid #0f766e; box-shadow: 0 12px 24px rgba(43, 38, 34, .15);
+            padding: 6px 20px 14px; flex-direction: column; }
+    .menu--open { display: flex; }
+    .menu a, .menu__who { margin: 0; padding: 14px 4px; border-bottom: 1px solid #ece5da; }
+    .menu__accent { margin-top: 12px !important; text-align: center; border-bottom: none !important; }
+    h1 { font-size: 26px; line-height: 1.2; }
+    .page { padding: 18px 0 40px; }
+    .head-line { flex-direction: column; align-items: stretch; gap: 4px; margin-bottom: 14px; }
+    .head-line .btn { text-align: center; }
+    .box { padding: 18px 16px; border-radius: 12px; }
+    .btn { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; }
+    .box .btn, .card__form .btn { width: 100%; }
+    .field input, .field select, .field textarea { min-height: 46px; font-size: 16px; }
+    .card { padding: 16px; }
+    .card__form { flex-direction: column; }
+    .card__form select { min-height: 44px; font-size: 16px; }
+    .filter { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; margin: 0 -20px 16px; padding-left: 20px; padding-right: 20px; }
+    .filter__item { white-space: nowrap; min-height: 40px; display: inline-flex; align-items: center; }
+    .stars-pick label { font-size: 40px; }
+    .bottom { text-align: center; }
+}
+.card__form select { background: #fff; }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+.page { flex: 1; min-height: 0; width: min(1000px, 100% - 40px); }
