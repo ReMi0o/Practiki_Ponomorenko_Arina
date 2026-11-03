@@ -55,6 +55,7 @@ async function showSeats() {
   if (!res.ok) return;
   const data = await res.json();
   seats.textContent = data.free > 0 ? `Свободно мест: ${data.free} из ${data.seats}` : 'Мест нет';
+  seats.animate?.([{ opacity: 0, transform: 'translateY(-4px)' }, { opacity: 1, transform: 'none' }], { duration: 250 });
   seats.classList.toggle('field__hint--warn', data.free <= 2);
 }
 select?.addEventListener('change', showSeats);

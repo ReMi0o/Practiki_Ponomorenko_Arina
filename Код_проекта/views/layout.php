@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#0f766e">
     <title>Мастерская идей — запись на мастер-классы</title>
     <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/motion.css">
 </head>
 <body>
 <header class="top">
@@ -45,5 +46,6 @@
     document.querySelector('.mnav').addEventListener('toggle', e =>
         document.getElementById('menu').classList.toggle('menu--open', e.target.open));
 </script>
+<script src="/assets/js/motion.js" defer></script>
 </body>
 </html>
