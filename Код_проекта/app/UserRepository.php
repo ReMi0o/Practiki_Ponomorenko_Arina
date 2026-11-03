@@ -37,7 +37,6 @@ class UserRepository
         return (int)$this->db->lastInsertId();
     }
 
-    /** Возвращает пользователя, если логин и пароль верные */
     public function check(string $login, string $password): ?array
     {
         $user = $this->findByLogin($login);

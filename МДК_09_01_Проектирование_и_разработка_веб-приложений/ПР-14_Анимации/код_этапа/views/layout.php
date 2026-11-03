@@ -42,7 +42,6 @@
 </main>
 <footer class="bottom"><div class="wrap">Мастерская идей, 2026 · учебный проект</div></footer>
 <script>
-    // ПР 13: на телефоне меню открывается кнопкой «Меню» (элемент details)
     document.querySelector('.mnav').addEventListener('toggle', e =>
         document.getElementById('menu').classList.toggle('menu--open', e.target.open));
 </script>

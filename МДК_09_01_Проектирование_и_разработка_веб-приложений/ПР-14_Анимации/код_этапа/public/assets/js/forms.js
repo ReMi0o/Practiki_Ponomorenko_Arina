@@ -1,4 +1,3 @@
-// Проверка форм в браузере (ПР 9). Сервер всё равно проверяет данные повторно.
 const rules = {
   login:       v => /^[A-Za-z0-9_]{4,20}$/.test(v) || 'Логин — от 4 до 20 символов: латинские буквы, цифры, «_»',
   password:    v => (v.length >= 8 && /\d/.test(v)) || 'Пароль — не короче 8 символов и хотя бы одна цифра',
@@ -45,7 +44,6 @@ for (const form of document.querySelectorAll('form[data-check]')) {
   });
 }
 
-// Подсказка о свободных местах (запрос к /api/workshops/{id})
 const select = document.getElementById('workshop_id');
 const seats = document.getElementById('seats');
 async function showSeats() {

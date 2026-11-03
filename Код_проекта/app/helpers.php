@@ -1,5 +1,4 @@
 <?php
-/** Экранирование вывода (защита от XSS) */
 function e(?string $s): string
 {
     return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
@@ -11,7 +10,6 @@ function redirect(string $to): never
     exit;
 }
 
-/** Одноразовые сообщения между запросами */
 function flash(string $type, string $text): void
 {
     $_SESSION['flash'][] = ['type' => $type, 'text' => $text];
@@ -41,7 +39,6 @@ function ru_date(string $dt): string
     return date('j', $t) . ' ' . $months[date('n', $t) - 1] . ' ' . date('Y, H:i', $t);
 }
 
-/** Токен против подделки межсайтовых запросов (CSRF) */
 function csrf_field(): string
 {
     $_SESSION['csrf'] ??= bin2hex(random_bytes(16));
@@ -53,7 +50,6 @@ function csrf_ok(): bool
     return isset($_POST['csrf'], $_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $_POST['csrf']);
 }
 
-/** Сообщение об ошибке под полем */
 function field_error(array $errors, string $name): string
 {
     return '<span class="field__error" data-for="' . $name . '">' . e($errors[$name] ?? '') . '</span>';

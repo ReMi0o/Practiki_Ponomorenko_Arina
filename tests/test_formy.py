@@ -29,7 +29,6 @@ def uniq(n):
     return f'auto_{STAMP}_{n}'
 
 
-# (ID, данные, должна ли пройти регистрация)
 REGISTRATION = [
     ('R1 верные данные', dict(GOOD, login=uniq(1)), True),
     ('R3 логин 3 символа', dict(GOOD, login='ab1'), False),

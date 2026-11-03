@@ -1,4 +1,3 @@
-<?php /** @var array $b  @var bool $adminView */ ?>
 <article class="card">
     <header class="card__head">
         <span class="card__no">Заявка № <?= (int)$b['booking_id'] ?></span>

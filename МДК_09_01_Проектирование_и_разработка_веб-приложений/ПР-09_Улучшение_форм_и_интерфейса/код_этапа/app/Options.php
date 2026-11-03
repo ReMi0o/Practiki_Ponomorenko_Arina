@@ -1,5 +1,4 @@
 <?php
-/** Значения выпадающих списков формы заявки (ПР 9) */
 final class Options
 {
     public const PAYMENT = [

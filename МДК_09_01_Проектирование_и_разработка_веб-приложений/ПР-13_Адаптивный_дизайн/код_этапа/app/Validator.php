@@ -1,8 +1,4 @@
 <?php
-/**
- * Проверка данных формы регистрации на сервере.
- * Возвращает массив ошибок: ['поле' => 'текст ошибки'].
- */
 class Validator
 {
     public static function registration(array $d, UserRepository $users): array

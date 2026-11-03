@@ -1,5 +1,4 @@
 <?php
-/** Экранирование вывода (защита от XSS) */
 function e(?string $s): string
 {
     return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
@@ -11,7 +10,6 @@ function redirect(string $to): never
     exit;
 }
 
-/** Одноразовые сообщения между запросами */
 function flash(string $type, string $text): void
 {
     $_SESSION['flash'][] = ['type' => $type, 'text' => $text];

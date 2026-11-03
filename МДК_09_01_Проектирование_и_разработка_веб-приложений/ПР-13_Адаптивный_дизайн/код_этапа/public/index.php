@@ -1,13 +1,6 @@
 <?php
-/**
- * «Мастерская идей» — портал записи на мастер-классы.
- * Единая точка входа: все запросы приходят сюда и распределяются по маршрутам.
- *
- * Запуск: php -S localhost:8000 -t public public/index.php
- */
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// встроенный сервер PHP отдаёт статические файлы (css, js) сам
 if (PHP_SAPI === 'cli-server' && $path !== '/' && is_file(__DIR__ . $path)) {
     return false;
 }
@@ -29,7 +22,6 @@ $workshops = new WorkshopRepository();
 $bookings = new BookingRepository();
 
 switch (true) {
-    // ---------- гость ----------
     case $path === '/':
         view('home', ['workshops' => $workshops->all()]);
         break;
@@ -66,7 +58,6 @@ switch (true) {
         Auth::logout();
         redirect('/');
 
-    // ---------- участник ----------
     case $path === '/cabinet':
         Auth::needUser();
         view('cabinet', ['list' => $bookings->ofUser(Auth::user()['user_id'])]);
@@ -114,7 +105,6 @@ switch (true) {
         view('feedback', compact('b', 'errors', 'old'));
         break;
 
-    // JSON: сколько свободных мест осталось (используется формой записи)
     case preg_match('#^/api/workshops/(\d+)$#', $path, $m) === 1:
         header('Content-Type: application/json; charset=utf-8');
         $w = $workshops->find((int)$m[1]);
@@ -127,7 +117,6 @@ switch (true) {
                           'seats' => (int)$w['seats'], 'free' => $bookings->freeSeats($w)], JSON_UNESCAPED_UNICODE);
         break;
 
-    // ---------- администратор ----------
     case $path === '/admin':
         Auth::needAdmin();
         $filter = (int)($_GET['status'] ?? 0) ?: null;

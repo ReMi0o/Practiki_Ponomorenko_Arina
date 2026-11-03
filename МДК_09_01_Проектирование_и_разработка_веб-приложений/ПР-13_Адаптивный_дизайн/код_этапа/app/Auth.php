@@ -12,7 +12,7 @@ class Auth
 
     public static function login(array $user): void
     {
-        session_regenerate_id(true);   // новая сессия после входа
+        session_regenerate_id(true);
         $_SESSION['uid'] = $user['user_id'];
     }
 
@@ -27,7 +27,6 @@ class Auth
         return (self::user()['role'] ?? '') === 'admin';
     }
 
-    /** Только для вошедших пользователей */
     public static function needUser(): void
     {
         if (!self::user()) {
@@ -36,7 +35,6 @@ class Auth
         }
     }
 
-    /** Только для администратора */
     public static function needAdmin(): void
     {
         if (!self::isAdmin()) {

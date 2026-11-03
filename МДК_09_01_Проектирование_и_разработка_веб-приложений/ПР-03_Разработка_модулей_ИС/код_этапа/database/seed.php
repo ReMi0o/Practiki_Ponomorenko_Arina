@@ -1,9 +1,4 @@
 <?php
-/**
- * Тестовые данные: три участника, заявки, смена статусов.
- * Запуск (один раз): php database/seed.php
- * Пароль у всех участников: Uchastnik1
- */
 spl_autoload_register(fn($c) => require __DIR__ . "/../app/$c.php");
 $db = Database::get();
 $users = new UserRepository();

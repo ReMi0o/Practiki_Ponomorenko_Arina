@@ -1,8 +1,4 @@
 <?php
-/**
- * Подключение к SQLite через PDO.
- * Один объект PDO на запрос (паттерн «одиночка»).
- */
 class Database
 {
     private static ?PDO $pdo = null;
@@ -23,7 +19,6 @@ class Database
         return self::$pdo;
     }
 
-    /** Создание таблиц и начальных данных при первом запуске */
     private static function install(): void
     {
         self::$pdo->exec(file_get_contents(__DIR__ . '/../database/schema.sql'));

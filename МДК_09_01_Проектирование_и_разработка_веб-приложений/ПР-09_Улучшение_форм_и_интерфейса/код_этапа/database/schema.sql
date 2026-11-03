@@ -1,5 +1,3 @@
--- База данных «Мастерская идей» (ПР № 2)
--- СУБД: SQLite 3 (через расширение PDO SQLite в PHP)
 
 CREATE TABLE IF NOT EXISTS users (
     user_id     INTEGER PRIMARY KEY AUTOINCREMENT,

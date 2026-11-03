@@ -1,13 +1,6 @@
 <?php
-/**
- * «Мастерская идей» — портал записи на мастер-классы.
- * Единая точка входа: все запросы приходят сюда и распределяются по маршрутам.
- *
- * Запуск: php -S localhost:8000 -t public public/index.php
- */
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// встроенный сервер PHP отдаёт статические файлы (css, js) сам
 if (PHP_SAPI === 'cli-server' && $path !== '/' && is_file(__DIR__ . $path)) {
     return false;
 }
@@ -24,7 +17,6 @@ $workshops = new WorkshopRepository();
 $bookings = new BookingRepository();
 
 switch (true) {
-    // ---------- гость ----------
     case $path === '/':
         view('home', ['workshops' => $workshops->all()]);
         break;
@@ -61,7 +53,6 @@ switch (true) {
         Auth::logout();
         redirect('/');
 
-    // ---------- участник ----------
     case $path === '/cabinet':
         Auth::needUser();
         view('cabinet', ['list' => $bookings->ofUser(Auth::user()['user_id'])]);
@@ -90,7 +81,6 @@ switch (true) {
                          'chosen' => (int)($_GET['w'] ?? $_POST['workshop_id'] ?? 0)]);
         break;
 
-    // ---------- администратор ----------
     case $path === '/admin':
         Auth::needAdmin();
         view('admin', ['list' => $bookings->all(), 'statuses' => $bookings->statuses()]);

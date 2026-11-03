@@ -1,7 +1,5 @@
-// ПР 14: управление анимациями
 const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// карточки появляются по мере прокрутки
 const items = document.querySelectorAll('.ws, .card');
 if (!calm && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver(entries => {
@@ -19,7 +17,6 @@ if (!calm && 'IntersectionObserver' in window) {
     });
 }
 
-// flash-сообщения превращаются во всплывающие уведомления
 const notes = document.querySelectorAll('.page > .note');
 if (notes.length) {
     const box = document.createElement('div');
@@ -37,11 +34,10 @@ if (notes.length) {
     });
 }
 
-// «встряхнуть» поля с ошибками после отправки формы
 function wobble() {
     document.querySelectorAll('.field--bad').forEach(f => {
         f.classList.remove('wobble');
-        void f.offsetWidth;          // перезапуск анимации
+        void f.offsetWidth;
         f.classList.add('wobble');
     });
 }

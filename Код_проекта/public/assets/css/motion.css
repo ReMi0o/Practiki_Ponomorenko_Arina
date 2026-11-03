@@ -1,31 +1,25 @@
-/* ===== ПР 14. Анимации и микро-анимации =====
-   Правило: двигаем только transform и opacity — они не вызывают пересчёт раскладки страницы. */
 
 :root {
-    --spring: cubic-bezier(.34, 1.56, .64, 1);   /* лёгкий «пружинящий» выход */
+    --spring: cubic-bezier(.34, 1.56, .64, 1);
     --smooth: cubic-bezier(.4, 0, .2, 1);
 }
 
-/* 1. Переход между страницами — View Transitions API (браузер сам делает плавную смену страниц) */
 @view-transition { navigation: auto; }
 ::view-transition-old(root) { animation: 160ms var(--smooth) both fade-out; }
 ::view-transition-new(root) { animation: 260ms var(--smooth) both slide-in; }
 @keyframes fade-out { to { opacity: 0; } }
 @keyframes slide-in { from { opacity: 0; transform: translateX(14px); } }
-.top { view-transition-name: header; }          /* шапка остаётся на месте при переходе */
+.top { view-transition-name: header; }
 
-/* 2. Появление карточек при прокрутке (класс ставит animations.js через IntersectionObserver) */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .5s var(--smooth), transform .5s var(--smooth); }
 .reveal.is-visible { opacity: 1; transform: none; }
 
-/* 3. Карточки: подъём при наведении */
 .ws, .card { transition: transform .25s var(--smooth), box-shadow .25s var(--smooth), opacity .5s var(--smooth); }
 @media (hover: hover) {
     .ws:hover, .card:hover { transform: translateY(-5px); box-shadow: 0 14px 28px rgba(15, 118, 110, .14); }
     .reveal.is-visible:hover { transform: translateY(-5px); }
 }
 
-/* 4. Кнопки: сдвиг блика при наведении и «пружина» при нажатии */
 .btn { position: relative; overflow: hidden; transition: transform .15s var(--spring), box-shadow .2s; }
 .btn::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
               transform: translateX(-120%); transition: transform .6s var(--smooth); }
@@ -35,11 +29,9 @@
 }
 .btn:active { transform: scale(.95); transition-duration: .05s; }
 
-/* 5. Логотип: буква «М» поворачивается при наведении */
 .brand__mark { transition: transform .5s var(--spring); }
 .brand:hover .brand__mark { transform: rotate(-20deg) scale(1.1); }
 
-/* 6. Поля: мягкое свечение в фокусе, ошибка выезжает сверху */
 .field input, .field select, .field textarea, .card__form select { transition: border-color .2s, box-shadow .2s, background-color .2s; }
 .field input:focus, .field select:focus, .field textarea:focus, .card__form select:focus {
     outline: none; border-color: #0f766e; box-shadow: 0 0 0 4px rgba(15, 118, 110, .18); }
@@ -48,7 +40,6 @@
 .field--bad.wobble { animation: wobble .4s ease; }
 @keyframes wobble { 0%, 100% { transform: none; } 25% { transform: translateX(-6px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-3px); } }
 
-/* 7. Уведомления-«тосты»: выезжают справа, полоска показывает время до закрытия */
 .toasts { position: fixed; right: 20px; bottom: 20px; z-index: 50; display: flex; flex-direction: column; gap: 10px; max-width: 360px; }
 .toasts .note { margin: 0; box-shadow: 0 10px 24px rgba(43, 38, 34, .18); position: relative; overflow: hidden;
                 animation: toast-in .4s var(--spring); }
@@ -59,21 +50,17 @@
 @keyframes toast-out { to { opacity: 0; transform: translateX(110%); } }
 @keyframes timer { to { transform: scaleX(0); } }
 
-/* 8. Мобильное меню выпадает сверху */
 .menu--open { animation: menu-drop .25s var(--smooth); }
 @keyframes menu-drop { from { opacity: 0; transform: translateY(-12px); } }
 
-/* 9. Звёзды в форме отзыва «подпрыгивают» */
 .stars-pick label { transition: transform .2s var(--spring), color .15s; }
 .stars-pick label:hover { transform: scale(1.25); }
 .stars-pick input:checked + label { animation: pop .35s var(--spring); }
 @keyframes pop { 50% { transform: scale(1.4); } }
 
-/* 10. Статус «Новая» подсвечивается мягкой пульсацией */
 .tag--s1 { animation: glow 2.2s ease-in-out infinite; }
 @keyframes glow { 50% { box-shadow: 0 0 0 5px rgba(249, 115, 22, .15); } }
 
-/* Если в системе включено «Уменьшить движение» — отключаем анимации */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after, ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
         animation: none !important; transition: none !important; }

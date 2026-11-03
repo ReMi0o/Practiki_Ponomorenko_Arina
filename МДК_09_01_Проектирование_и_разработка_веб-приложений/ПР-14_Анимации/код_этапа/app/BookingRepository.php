@@ -40,7 +40,6 @@ class BookingRepository
         return $st->fetch() ?: null;
     }
 
-    /** Все заявки; если передан статус — только с этим статусом */
     public function all(?int $statusId = null): array
     {
         if ($statusId) {
@@ -51,7 +50,6 @@ class BookingRepository
         return $this->db->query(self::SELECT . ' ORDER BY b.booking_id DESC')->fetchAll();
     }
 
-    /** Количество заявок по каждому статусу — для счётчиков фильтра */
     public function countByStatus(): array
     {
         return $this->db->query('SELECT status_id, COUNT(*) AS n FROM bookings GROUP BY status_id')
@@ -65,7 +63,6 @@ class BookingRepository
         return (int)$workshop['seats'] - (int)$st->fetchColumn();
     }
 
-    /** Отзыв можно оставить только по завершённой заявке и только один раз */
     public function canLeaveFeedback(array $b): bool
     {
         return $b['status'] === 'Завершено' && $b['feedback'] === null;
