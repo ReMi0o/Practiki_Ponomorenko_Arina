@@ -1,0 +1,46 @@
+erDiagram
+    users ||--o{ bookings : "оформляет"
+    workshops ||--o{ bookings : "включает"
+    booking_statuses ||--o{ bookings : "определяет статус"
+    bookings ||--o| feedback : "получает"
+
+    users {
+        INTEGER user_id PK
+        VARCHAR login UK "логин, без учёта регистра"
+        VARCHAR pass_hash "хеш пароля"
+        VARCHAR fio
+        VARCHAR phone "+7(XXX)XXX-XX-XX"
+        VARCHAR email
+        VARCHAR role "user / admin"
+        DATETIME registered
+    }
+    workshops {
+        INTEGER workshop_id PK
+        VARCHAR title
+        DATETIME starts_at
+        VARCHAR location
+        VARCHAR host "ведущий"
+        INTEGER seats "мест всего"
+        TEXT about
+    }
+    booking_statuses {
+        INTEGER status_id PK
+        VARCHAR title UK "Новая / Назначено / Завершено"
+    }
+    bookings {
+        INTEGER booking_id PK
+        INTEGER user_id FK
+        INTEGER workshop_id FK
+        INTEGER status_id FK
+        VARCHAR payment
+        VARCHAR room
+        VARCHAR wishes "необязательно"
+        DATETIME created
+    }
+    feedback {
+        INTEGER feedback_id PK
+        INTEGER booking_id FK,UK
+        INTEGER stars "1-5"
+        TEXT message
+        DATETIME created
+    }
