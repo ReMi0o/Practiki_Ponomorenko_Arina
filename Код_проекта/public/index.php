@@ -19,6 +19,11 @@ spl_autoload_register(fn($class) => require __DIR__ . "/../app/$class.php");
 require __DIR__ . '/../app/helpers.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
+if ($method === 'POST' && !csrf_ok()) {
+    http_response_code(419);
+    view('error', ['code' => 419, 'message' => 'Страница устарела. Обновите её и отправьте форму ещё раз.']);
+    exit;
+}
 $users = new UserRepository();
 $workshops = new WorkshopRepository();
 $bookings = new BookingRepository();
@@ -70,37 +75,71 @@ switch (true) {
     case $path === '/booking':
         Auth::needUser();
         $errors = [];
+        $old = ['workshop_id' => (int)($_GET['w'] ?? 0)];
         if ($method === 'POST') {
-            if (!$workshops->find((int)($_POST['workshop_id'] ?? 0))) {
-                $errors[] = 'Выберите мастер-класс';
-            }
-            if (trim($_POST['payment'] ?? '') === '') {
-                $errors[] = 'Укажите способ оплаты';
-            }
-            if (trim($_POST['room'] ?? '') === '') {
-                $errors[] = 'Укажите помещение';
-            }
+            $old = $_POST;
+            $errors = Validator::booking($_POST, $workshops, $bookings);
             if (!$errors) {
                 $bookings->add(Auth::user()['user_id'], $_POST);
                 flash('ok', 'Заявка принята. Следите за статусом в личном кабинете.');
                 redirect('/cabinet');
             }
         }
-        view('booking', ['workshops' => $workshops->all(), 'errors' => $errors,
-                         'chosen' => (int)($_GET['w'] ?? $_POST['workshop_id'] ?? 0)]);
+        view('booking', ['workshops' => $workshops->all(), 'errors' => $errors, 'old' => $old]);
+        break;
+
+    case $path === '/feedback':
+        Auth::needUser();
+        $b = $bookings->find((int)($_GET['id'] ?? 0));
+        if (!$b || $b['user_id'] != Auth::user()['user_id']) {
+            http_response_code(404);
+            view('error', ['code' => 404, 'message' => 'Заявка не найдена']);
+            break;
+        }
+        if (!$bookings->canLeaveFeedback($b)) {
+            flash('error', 'Отзыв можно оставить после того, как мастер-класс завершится');
+            redirect('/cabinet');
+        }
+        $errors = [];
+        $old = [];
+        if ($method === 'POST') {
+            $old = $_POST;
+            $errors = Validator::feedback($_POST);
+            if (!$errors) {
+                $bookings->addFeedback($b['booking_id'], (int)$_POST['stars'], $_POST['message']);
+                flash('ok', 'Спасибо! Отзыв опубликован.');
+                redirect('/cabinet');
+            }
+        }
+        view('feedback', compact('b', 'errors', 'old'));
+        break;
+
+    // JSON: сколько свободных мест осталось (используется формой записи)
+    case preg_match('#^/api/workshops/(\d+)$#', $path, $m) === 1:
+        header('Content-Type: application/json; charset=utf-8');
+        $w = $workshops->find((int)$m[1]);
+        if (!$w) {
+            http_response_code(404);
+            echo json_encode(['error' => 'not found']);
+            break;
+        }
+        echo json_encode(['id' => (int)$w['workshop_id'], 'title' => $w['title'],
+                          'seats' => (int)$w['seats'], 'free' => $bookings->freeSeats($w)], JSON_UNESCAPED_UNICODE);
         break;
 
     // ---------- администратор ----------
     case $path === '/admin':
         Auth::needAdmin();
-        view('admin', ['list' => $bookings->all(), 'statuses' => $bookings->statuses()]);
+        $filter = (int)($_GET['status'] ?? 0) ?: null;
+        view('admin', ['list' => $bookings->all($filter), 'statuses' => $bookings->statuses(),
+                       'counts' => $bookings->countByStatus(), 'filter' => $filter]);
         break;
 
     case $path === '/admin/status' && $method === 'POST':
         Auth::needAdmin();
         $bookings->changeStatus((int)$_POST['booking_id'], (int)$_POST['status_id']);
         flash('ok', 'Статус заявки № ' . (int)$_POST['booking_id'] . ' обновлён');
-        redirect('/admin');
+        redirect('/admin' . (!empty($_POST['filter']) ? '?status=' . (int)$_POST['filter'] : ''));
 
     default:
         http_response_code(404);

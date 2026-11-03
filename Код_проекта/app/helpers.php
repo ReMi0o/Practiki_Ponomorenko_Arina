@@ -40,3 +40,26 @@ function ru_date(string $dt): string
     $t = strtotime($dt);
     return date('j', $t) . ' ' . $months[date('n', $t) - 1] . ' ' . date('Y, H:i', $t);
 }
+
+/** Токен против подделки межсайтовых запросов (CSRF) */
+function csrf_field(): string
+{
+    $_SESSION['csrf'] ??= bin2hex(random_bytes(16));
+    return '<input type="hidden" name="csrf" value="' . $_SESSION['csrf'] . '">';
+}
+
+function csrf_ok(): bool
+{
+    return isset($_POST['csrf'], $_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $_POST['csrf']);
+}
+
+/** Сообщение об ошибке под полем */
+function field_error(array $errors, string $name): string
+{
+    return '<span class="field__error" data-for="' . $name . '">' . e($errors[$name] ?? '') . '</span>';
+}
+
+function field_class(array $errors, string $name): string
+{
+    return isset($errors[$name]) ? 'field field--bad' : 'field';
+}

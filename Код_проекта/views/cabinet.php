@@ -1,18 +1,20 @@
-<h1>Мои заявки</h1>
+<div class="head-line">
+    <h1>Мои заявки</h1>
+    <a class="btn" href="/booking">Записаться ещё</a>
+</div>
 <?php if (!$list): ?>
     <p>Заявок пока нет. <a href="/booking">Записаться на мастер-класс</a></p>
 <?php else: ?>
-    <table class="tbl">
-        <tr><th>№</th><th>Мастер-класс</th><th>Когда</th><th>Помещение</th><th>Оплата</th><th>Статус</th></tr>
-        <?php foreach ($list as $b): ?>
-            <tr>
-                <td><?= (int)$b['booking_id'] ?></td>
-                <td><?= e($b['workshop']) ?></td>
-                <td><?= e(ru_date($b['starts_at'])) ?></td>
-                <td><?= e($b['room']) ?></td>
-                <td><?= e($b['payment']) ?></td>
-                <td><?= e($b['status']) ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
+    <div class="cards">
+        <?php foreach ($list as $b):
+            ob_start();
+            if ($b['feedback'] === null && $b['status'] === 'Завершено'): ?>
+                <a class="btn btn--line" href="/feedback?id=<?= (int)$b['booking_id'] ?>">Оставить отзыв</a>
+            <?php elseif ($b['feedback'] === null): ?>
+                <p class="muted">Отзыв можно будет оставить после занятия</p>
+            <?php endif;
+            $slot = ob_get_clean();
+            require __DIR__ . '/_booking_card.php';
+        endforeach; ?>
+    </div>
 <?php endif; ?>
